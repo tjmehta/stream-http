@@ -56,8 +56,24 @@ test('large binary request without streaming', function (t) {
 		res.on('end', function () {
 			if (skipVerification)
 				t.skip('binary data not preserved on IE <= 8')
-			else
-				t.ok(reference.equals(Buffer.concat(buffers)), 'contents match')
+			else {
+				var actual = Buffer.concat(buffers)
+				var equal = reference.equals(actual)
+				t.ok(equal, 'contents match')
+				if (!equal) {
+					console.log('correct length:', reference.length, 'actual length:', actual.length)
+					var errors = 0
+					if (reference.length === actual.length) {
+						for (var i = 0; i < reference.length; i++) {
+							if (reference[i] !== actual[i]) {
+								console.log('difference at offset:', i, 'should be:', reference[i], 'is', actual[i])
+								if (errors++ > 100)
+									break
+							}
+						}
+					}
+				}
+			}
 			t.end()
 		})
 
