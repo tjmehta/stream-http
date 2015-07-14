@@ -17,3 +17,6 @@ browsers:
 server: ./test/server/index.js
 scripts:
   - "/polyfill.js"
+browserify:
+  - require: ./index.js # Replace 'http' with this module for the 'request' test
+    expose: http
